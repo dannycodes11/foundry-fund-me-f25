@@ -63,7 +63,7 @@ contract HelperConfigTest is Test {
         vm.chainId(31337);
         HelperConfig anvilHelper = new HelperConfig();
         HelperConfig.NetworkConfig memory activeConfig = anvilHelper.getActiveNetworkConfig();
-        
+
         MockV3Aggregator mockPriceFeed = MockV3Aggregator(activeConfig.priceFeed);
         uint8 decimals = mockPriceFeed.decimals();
         assertEq(decimals, 8);
@@ -73,7 +73,7 @@ contract HelperConfigTest is Test {
         vm.chainId(31337);
         HelperConfig anvilHelper = new HelperConfig();
         HelperConfig.NetworkConfig memory activeConfig = anvilHelper.getActiveNetworkConfig();
-        
+
         MockV3Aggregator mockPriceFeed = MockV3Aggregator(activeConfig.priceFeed);
         (, int256 answer,,,) = mockPriceFeed.latestRoundData();
         assertEq(answer, 2000e8);
@@ -83,7 +83,7 @@ contract HelperConfigTest is Test {
         vm.chainId(31337);
         HelperConfig anvilHelper = new HelperConfig();
         HelperConfig.NetworkConfig memory activeConfig = anvilHelper.getActiveNetworkConfig();
-        
+
         MockV3Aggregator mockPriceFeed = MockV3Aggregator(activeConfig.priceFeed);
         uint256 version = mockPriceFeed.version();
         assertEq(version, 4); // MockV3Aggregator returns version 4
@@ -92,7 +92,7 @@ contract HelperConfigTest is Test {
     function testGetOrCreateAnvilConfigReturnsSameAddressWhenCalledTwice() public {
         vm.chainId(31337);
         HelperConfig anvilHelper = new HelperConfig();
-        
+
         HelperConfig.NetworkConfig memory config1 = anvilHelper.getOrCreateAnvilEthConfig();
         HelperConfig.NetworkConfig memory config2 = anvilHelper.getOrCreateAnvilEthConfig();
         assertEq(config1.priceFeed, config2.priceFeed);

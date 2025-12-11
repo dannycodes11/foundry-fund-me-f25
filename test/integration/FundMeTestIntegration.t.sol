@@ -22,7 +22,7 @@ contract FundMeTestIntegration is Test {
     function testUserCanFundFundMeTestIntegration() public {
         FundFundMe fundFundMe = new FundFundMe();
         fundFundMe.fundFundMe(address(fundMe));
-        
+
         address funder = fundMe.getFunder(0);
         assertEq(funder, msg.sender);
     }
@@ -31,11 +31,11 @@ contract FundMeTestIntegration is Test {
         // Arrange - Fund the contract
         FundFundMe fundFundMe = new FundFundMe();
         fundFundMe.fundFundMe(address(fundMe));
-        
+
         // Act - Owner withdraws
         WithdrawFundMe withdrawFundMe = new WithdrawFundMe();
         withdrawFundMe.withdrawFundMe(address(fundMe));
-        
+
         // Assert
         assertEq(address(fundMe).balance, 0);
     }

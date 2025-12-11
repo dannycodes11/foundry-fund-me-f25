@@ -20,7 +20,7 @@ contract FundMeTest is Test {
         // Give USER some starting balance
         vm.deal(USER, STARTING_BALANCE);
     }
-    
+
     /*//////////////////////////////////////////////////////////////
                         BASIC FUNCTIONALITY TESTS
     //////////////////////////////////////////////////////////////*/
@@ -56,7 +56,7 @@ contract FundMeTest is Test {
         // Use USER instead of address(this)
         vm.prank(USER);
         fundMe.fund{value: SEND_VALUE}();
-        
+
         assertEq(fundMe.getAddressToAmountFunded(USER), SEND_VALUE);
     }
 
@@ -85,7 +85,7 @@ contract FundMeTest is Test {
 
         vm.prank(alice);
         fundMe.fund{value: SEND_VALUE}();
-        
+
         vm.prank(bob);
         fundMe.fund{value: SEND_VALUE * 2}();
 
@@ -109,7 +109,7 @@ contract FundMeTest is Test {
 
     function testOnlyOwnerCanWithdraw() public funded {
         address notOwner = makeAddr("notOwner");
-        
+
         vm.prank(notOwner);
         vm.expectRevert();
         fundMe.withdraw();
@@ -136,7 +136,7 @@ contract FundMeTest is Test {
         // Arrange
         uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1;
-        
+
         for (uint160 i = startingFunderIndex; i < numberOfFunders + startingFunderIndex; i++) {
             hoax(address(i), SEND_VALUE);
             fundMe.fund{value: SEND_VALUE}();
@@ -173,14 +173,14 @@ contract FundMeTest is Test {
 
     function testWithdrawResetsMappingAndArray() public funded {
         // Arrange - already funded by modifier
-        
+
         // Act
         vm.prank(fundMe.getOwner());
         fundMe.withdraw();
 
         // Assert
         assertEq(fundMe.getAddressToAmountFunded(USER), 0);
-        
+
         vm.expectRevert(); // array is now empty
         fundMe.getFunder(0);
     }
@@ -193,7 +193,7 @@ contract FundMeTest is Test {
         // Act
         vm.prank(fundMe.getOwner());
         fundMe.cheaperWithdraw();
-        
+
         // Assert
         assertEq(address(fundMe).balance, 0);
     }
@@ -202,7 +202,7 @@ contract FundMeTest is Test {
         // Arrange
         uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1;
-        
+
         for (uint160 i = startingFunderIndex; i < numberOfFunders + startingFunderIndex; i++) {
             hoax(address(i), SEND_VALUE);
             fundMe.fund{value: SEND_VALUE}();
@@ -223,7 +223,7 @@ contract FundMeTest is Test {
 
     function testOnlyOwnerCanCheaperWithdraw() public funded {
         address notOwner = makeAddr("notOwner");
-        
+
         vm.prank(notOwner);
         vm.expectRevert();
         fundMe.cheaperWithdraw();
@@ -236,7 +236,7 @@ contract FundMeTest is Test {
     function testCompareWithdrawGasCosts() public {
         // Setup: Fund with multiple people
         uint160 numberOfFunders = 10;
-        
+
         for (uint160 i = 1; i <= numberOfFunders; i++) {
             hoax(address(i), SEND_VALUE);
             fundMe.fund{value: SEND_VALUE}();
@@ -249,14 +249,14 @@ contract FundMeTest is Test {
         fundMe.withdraw();
         vm.stopPrank();
         uint256 gasEnd = gasleft();
-        
+
         uint256 gasUsedWithdraw = (gasStart - gasEnd) * tx.gasprice;
         console.log("withdraw() gas used:", gasUsedWithdraw);
 
         // Reset and test cheaperWithdraw
         DeployFundMe deployFundMe = new DeployFundMe();
         fundMe = deployFundMe.run();
-        
+
         for (uint160 i = 1; i <= numberOfFunders; i++) {
             hoax(address(i), SEND_VALUE);
             fundMe.fund{value: SEND_VALUE}();
@@ -268,7 +268,7 @@ contract FundMeTest is Test {
         fundMe.cheaperWithdraw();
         vm.stopPrank();
         gasEnd = gasleft();
-        
+
         uint256 gasUsedCheaperWithdraw = (gasStart - gasEnd) * tx.gasprice;
         console.log("cheaperWithdraw() gas used:", gasUsedCheaperWithdraw);
         console.log("Gas saved:", gasUsedWithdraw - gasUsedCheaperWithdraw);
